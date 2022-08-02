@@ -91,7 +91,8 @@ export function solve(
         maxIters = 100,
         solverTol = 1e-10,
         solverMaxIters = 100,
-        solverSimplexSize = 100
+        solverSimplexSize = 100,
+        retries = 10
     } = {}
 ): SolverResult {
     let Xs = sampleLogNormal(problem.n);
@@ -107,6 +108,20 @@ export function solve(
         Xs = newXs;
         Xp = newXp;
     }
-    console.log("Warning: maxIterations reached");
+    if (retries > 0) {
+        console.log("retrying...");
+        return solve(
+            problem,
+            {
+                tol: tol,
+                maxIters: maxIters,
+                solverTol: solverTol,
+                solverMaxIters: solverMaxIters,
+                solverSimplexSize: solverSimplexSize,
+                retries: retries - 1
+            }
+        )
+    }
+    console.log("no retries remaining")
     return new SolverResult(problem, false, Xs, Xp);
 }
