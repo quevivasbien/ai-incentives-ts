@@ -1,6 +1,25 @@
 import { minimize } from "./nelderMead"
 import { Vec, vec } from "./vec"
-import { Problem } from "./problem"
+import { get_total_safety, Problem } from "./problem"
+
+class SolverResult {
+    success: boolean;
+    xs: Vec;
+    xp: Vec;
+    s: Vec;
+    p: Vec;
+    total_safety: number;
+    payoffs: Vec;
+
+    constructor(problem: Problem, success: boolean, xs: Vec, xp: Vec) {
+        this.success = success;
+        this.xs = xs;
+        this.xp = xp;
+        [this.s, this.p] = problem.prodFunc.f(xs, xp);
+        this.total_safety = get_total_safety(this.s);
+        this.payoffs = problem.payoffs(xs, xp);
+    }
+}
 
 function randn(): number {
     let u = 0, v = 0;
@@ -26,7 +45,8 @@ function solveIter(
     initXs: Vec,
     initXp: Vec,
     solverTol: number,
-    solverMaxIters: number
+    solverMaxIters: number,
+    solverSimplexSize: number
 ): [Vec, Vec] {
     let Xs = new Vec();
     let Xp = new Vec();
@@ -40,7 +60,11 @@ function solveIter(
         }
         const res = minimize(
             objective, [Math.log(initXs[i]), Math.log(initXp[i])],
-            { tolerance: solverTol, maxIterations: solverMaxIters, initSimplexSize: 10 }
+            {
+                tolerance: solverTol,
+                maxIterations: solverMaxIters,
+                initSimplexSize: solverSimplexSize
+            }
         );
         Xs.push(Math.exp(res.x[0]));
         Xp.push(Math.exp(res.x[1]));
@@ -63,31 +87,26 @@ function approxEqual(x: Vec, y: Vec, tol: number, eps: number = 1e-8): boolean {
 export function solve(
     problem: Problem,
     {
-        maxIterations = 100,
         tol = 1e-6,
         maxIters = 100,
         solverTol = 1e-10,
-        solverMaxIters = 100
+        solverMaxIters = 100,
+        solverSimplexSize = 100
     } = {}
-): [Vec, Vec] {
+): SolverResult {
     let Xs = sampleLogNormal(problem.n);
     let Xp = sampleLogNormal(problem.n);
-    for (let i = 0; i < maxIterations; i++) {
-        const [newXs, newXp] = solveIter(problem, Xs, Xp, solverTol, solverMaxIters);
+    for (let i = 0; i < maxIters; i++) {
+        const [newXs, newXp] = solveIter(
+            problem, Xs, Xp,
+            solverTol, solverMaxIters, solverSimplexSize
+        );
         if (approxEqual(newXs, Xs, tol)) {
-            // console.log(`Exited on iteration ${i}`);
-            return [newXs, newXp];
+            return new SolverResult(problem, true, newXs, newXp);
         }
         Xs = newXs;
         Xp = newXp;
     }
     console.log("Warning: maxIterations reached");
-    return [Xs, Xp];
+    return new SolverResult(problem, false, Xs, Xp);
 }
-
-function test() {
-    const problem = new Problem();
-    const [Xs, Xp] = solve(problem);
-    return [Xs, Xp];
-}
-console.log(test());

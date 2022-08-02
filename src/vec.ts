@@ -92,6 +92,11 @@ export class Vec extends Array<number> {
         }
         return out;
     }
+
+    pretty(ndecimal: number = 2): string {
+        const strs = this.map(x => x.toFixed(ndecimal));
+        return `[${strs.join(", ")}]`;
+    }
 }
 
 export function vec(v: Array<number>): Vec {

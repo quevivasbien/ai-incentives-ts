@@ -80,3 +80,12 @@ export class Problem {
         );
     }
 }
+
+// function test() {
+//     let prodFunc = new ProdFunc();
+//     let problem = new Problem({ prodFunc: prodFunc });
+//     const xs = new Vec(1, 1);
+//     const xp = new Vec(1, 2);
+//     const payoffs = problem.payoffs(xs, xp);
+//     console.log(payoffs);
+// }

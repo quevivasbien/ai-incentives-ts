@@ -180,8 +180,8 @@ export function minimize(
 }
 
 
-function test() {
-    const f = (x: Array<number>) => (x[0] - 1) * (x[0] - 1) + x[1] * x[1];
-    const result = minimize(f, [0, 0], {initSimplexSize: 10, tolerance: 1e-10});
-    console.log(result);
-}
+// function test() {
+//     const f = (x: Array<number>) => (x[0] - 1) * (x[0] - 1) + x[1] * x[1];
+//     const result = minimize(f, [0, 0], {initSimplexSize: 10, tolerance: 1e-10});
+//     console.log(result);
+// }
