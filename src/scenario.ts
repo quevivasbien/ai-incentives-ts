@@ -102,3 +102,50 @@ export class Scenario {
         return results;
     }
 }
+
+function expandValue(value: number | Array<number>, n: number) {
+    if (value instanceof Array<number>) {
+        return value;
+    }
+    else {
+        return Array(n).fill(value);
+    }
+}
+
+export function createScenario(
+    n : number,
+    varying: string = "r",
+    stepsize: number | Array<number> = 0.01,
+    steps: number = 10,
+    {
+        a = 1,
+        alpha = 1,
+        b = 1,
+        beta = 1,
+        theta = 1,
+        d = 0,
+        r = 0.01
+    } : ValueMap<number | Array<number>> = {},
+): Scenario {
+    let params: ValueMap<Array<Array<number>>> = {
+        a: [expandValue(a, n)],
+        alpha: [expandValue(alpha, n)],
+        b: [expandValue(b, n)],
+        beta: [expandValue(beta, n)],
+        theta: [expandValue(theta, n)],
+        d: [expandValue(d, n)],
+        r: [expandValue(r, n)]
+    };
+    let v: Array<Array<number>> = [];
+    const stepsize_ = expandValue(stepsize, n);
+    const basevals = params[varying][0];
+    for (let i = 0; i < steps; i++) {
+        let vi: Array<number> = [];
+        for (let j = 0; j < n; j++) {
+            vi.push(basevals[j] + i * stepsize_[j]);
+        }
+        v.push(vi);
+    }
+    params[varying] = v;
+    return new Scenario(n, params);
+}
