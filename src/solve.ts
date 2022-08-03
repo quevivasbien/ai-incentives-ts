@@ -1,8 +1,8 @@
-import { minimize } from "./nelderMead"
+import { minimize, NMOptions } from "./nelderMead"
 import { Vec, vec } from "./vec"
 import { get_total_safety, Problem } from "./problem"
 
-class SolverResult {
+export class SolverResult {
     success: boolean;
     xs: Vec;
     xp: Vec;
@@ -44,9 +44,7 @@ function solveIter(
     problem: Problem,
     initXs: Vec,
     initXp: Vec,
-    solverTol: number,
-    solverMaxIters: number,
-    solverSimplexSize: number
+    solverOptions: NMOptions = new NMOptions()
 ): [Vec, Vec] {
     let Xs = new Vec();
     let Xp = new Vec();
@@ -60,11 +58,7 @@ function solveIter(
         }
         const res = minimize(
             objective, [Math.log(initXs[i]), Math.log(initXp[i])],
-            {
-                tolerance: solverTol,
-                maxIterations: solverMaxIters,
-                initSimplexSize: solverSimplexSize
-            }
+            solverOptions
         );
         Xs.push(Math.exp(res.x[0]));
         Xp.push(Math.exp(res.x[1]));
@@ -89,9 +83,7 @@ export function solve(
     {
         tol = 1e-6,
         maxIters = 100,
-        solverTol = 1e-10,
-        solverMaxIters = 100,
-        solverSimplexSize = 100,
+        solverOptions = new NMOptions(),
         retries = 10
     } = {}
 ): SolverResult {
@@ -100,7 +92,7 @@ export function solve(
     for (let i = 0; i < maxIters; i++) {
         const [newXs, newXp] = solveIter(
             problem, Xs, Xp,
-            solverTol, solverMaxIters, solverSimplexSize
+            solverOptions
         );
         if (approxEqual(newXs, Xs, tol)) {
             return new SolverResult(problem, true, newXs, newXp);
@@ -115,9 +107,7 @@ export function solve(
             {
                 tol: tol,
                 maxIters: maxIters,
-                solverTol: solverTol,
-                solverMaxIters: solverMaxIters,
-                solverSimplexSize: solverSimplexSize,
+                solverOptions: solverOptions,
                 retries: retries - 1
             }
         )

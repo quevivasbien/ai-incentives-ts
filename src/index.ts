@@ -1,6 +1,6 @@
-import { vec, Vec } from './vec';
+import { Vec, vec } from './vec';
 import { ProdFunc, Problem } from './problem';
-import { solve } from './solve';
+import { solve, SolverResult } from './solve';
 
 interface ValueMap {
     [key: string]: Vec;
@@ -22,6 +22,13 @@ function setupControls(varName: string) {
         <HTMLInputElement>(document.getElementById(`${varName}2`))
     ];
     const syncBox = <HTMLInputElement>(document.getElementById(`${varName}-sync`));
+    function setSync() {
+        sliders[1].hidden = syncBox.checked;
+        sliders[1].value = sliders[0].value;
+    }
+    syncBox.checked = true;
+    setSync();
+    syncBox.addEventListener("click", setSync);
     const display = <HTMLSpanElement>(document.getElementById(`${varName}-display`));
     function update(changed: number) {
         if (syncBox.checked) {
@@ -42,6 +49,16 @@ function setupAllControls() {
     }
 }
 
+function updateResultDisplay(res: SolverResult) {
+    document.getElementById("solution-xs").innerHTML = res.xs.pretty();
+    document.getElementById("solution-xp").innerHTML = res.xp.pretty();
+    document.getElementById("solution-s").innerHTML = res.s.pretty();
+    document.getElementById("solution-p").innerHTML = res.p.pretty();
+
+    document.getElementById("solution-total-safety").innerHTML = `${(res.total_safety * 100).toFixed(1)}%`;
+    document.getElementById("solution-payoffs").innerHTML = res.payoffs.pretty();
+}
+
 function run() {
     const prodFunc = new ProdFunc({
         a: values.a,
@@ -57,14 +74,7 @@ function run() {
     });
     const res = solve(problem);
     console.log("solver success: ", res.success)
-
-    document.getElementById("solution-xs").innerHTML = res.xs.pretty();
-    document.getElementById("solution-xp").innerHTML = res.xp.pretty();
-    document.getElementById("solution-s").innerHTML = res.s.pretty();
-    document.getElementById("solution-p").innerHTML = res.p.pretty();
-
-    document.getElementById("solution-total-safety").innerHTML = `${(res.total_safety * 100).toFixed(1)}%`;
-    document.getElementById("solution-payoffs").innerHTML = res.payoffs.pretty();
+    updateResultDisplay(res);
 }
 
 const button = <HTMLButtonElement>(document.getElementById("button"));

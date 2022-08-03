@@ -1,14 +1,5 @@
 export class Vec extends Array<number> {
-
-    // constructor(x: Array<number>) {
-    //     this.x = x;
-    //     this.length = x.length;
-    // }
-
-    // get(i: number): number {
-    //     return this[i];
-    // }
-
+    
     constructor(...items: Array<number>) {
         super(...items);
     }
