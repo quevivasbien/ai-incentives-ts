@@ -8,9 +8,9 @@ export class NMOptions {
     sigma: number;
     
     constructor({
-        maxIterations = 100,
-        tolerance = 1e-6,
-        initSimplexSize = 0.1,
+        maxIterations = 500,
+        tolerance = 1e-10,
+        initSimplexSize = 1,
         alpha = 1,
         gamma = 1,
         rho = 0.75,
@@ -77,13 +77,13 @@ function getCentroid(simplex: Array<Array<number>>, nDims: number): Array<number
     return centroid;
 }
 
-function distance(x: Array<number>, y: Array<number>): number {
-    let sum = 0;
-    for (let i = 0; i < x.length; i++) {
-        sum += Math.pow(x[i] - y[i], 2);
-    }
-    return Math.sqrt(sum);
-}
+// function distance(x: Array<number>, y: Array<number>): number {
+//     let sum = 0;
+//     for (let i = 0; i < x.length; i++) {
+//         sum += Math.pow(x[i] - y[i], 2);
+//     }
+//     return Math.sqrt(sum);
+// }
 
 function stdDev(values: Array<number>): number {
     const n = values.length;
@@ -93,7 +93,7 @@ function stdDev(values: Array<number>): number {
         squaredSum += Math.pow(values[i], 2);
         sum += values[i];
     }
-    return squaredSum / (n - 1) - Math.pow(sum, 2) / (n * (n-1));
+    return Math.sqrt(squaredSum / (n - 1) - Math.pow(sum, 2) / (n * (n-1)));
 }
 
 function exit(values: Array<number>, tol: number): boolean {

@@ -81,7 +81,7 @@ function approxEqual(x: Vec, y: Vec, tol: number, eps: number = 1e-8): boolean {
 export function solve(
     problem: Problem,
     {
-        tol = 1e-6,
+        tol = 1e-8,
         maxIters = 100,
         solverOptions = new NMOptions(),
         retries = 10
@@ -94,7 +94,7 @@ export function solve(
             problem, Xs, Xp,
             solverOptions
         );
-        if (approxEqual(newXs, Xs, tol)) {
+        if (approxEqual(newXs, Xs, tol) && approxEqual(newXp, Xp, tol)) {
             return new SolverResult(problem, true, newXs, newXp);
         }
         Xs = newXs;

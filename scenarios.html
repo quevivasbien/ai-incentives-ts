@@ -35,7 +35,15 @@
             const step_size = 0.01;
             const n_steps = 10;
             const scenario = model.createScenario(2, "r", step_size, n_steps, { theta: theta, r: base_r });
-            const res = scenario.solve();
+            const res = scenario.solve({
+                maxIterations: 500,
+                tolerance: 1e-10,
+                initSimplexSize: 1,
+                alpha: 1,
+                gamma: 1,
+                rho: 0.75,
+                sigma: 1
+            });
             const sigma = res.map(x => x.total_safety);
             const r = Array.from(Array(n_steps).keys()).map(i => base_r + i * step_size);
             const data = [{
