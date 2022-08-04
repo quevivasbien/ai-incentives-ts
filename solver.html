@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model for safety-performance tradeoffs</title>
+</head>
+
+<body>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #eeeeee;
+            text-align: center;
+        }
+        table {
+            margin: auto;
+        }
+        td {
+            padding: 20px;
+        }
+    </style>
+
+    <table>
+        <tr>
+            <td>
+                <p>A = <span id="a-display"></span></p>
+                <input type="range" min="0" max="50" value="25" step="0.1" class="slider" id="a1">
+                <input type="range" min="0" max="50" value="25" step="0.1" class="slider" id="a2">
+                <br>
+                <input type="checkbox" id="a-sync" name="a-sync">
+                <label for="a-sync">Bind A together?</label>
+            </td>
+            <td>
+                <p>&alpha; = <span id="alpha-display"></span></p>
+                <input type="range" min="0" max="2" value="1" step="0.05" class="slider" id="alpha1">
+                <input type="range" min="0" max="2" value="1" step="0.05" class="slider" id="alpha2">
+                <br>
+                <input type="checkbox" id="alpha-sync" name="alpha-sync">
+                <label for="alpha-sync">Bind &alpha; together?</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>B = <span id="b-display"></span></p>
+                <input type="range" min="0" max="50" value="25" step="0.1" class="slider" id="b1">
+                <input type="range" min="0" max="50" value="25" step="0.1" class="slider" id="b2">
+                <br>
+                <input type="checkbox" id="b-sync" name="b-sync">
+                <label for="b-sync">Bind B together?</label>
+            </td>
+            <td>
+                <p>&beta; = <span id="beta-display"></span></p>
+                <input type="range" min="0" max="2" value="1" step="0.05" class="slider" id="beta1">
+                <input type="range" min="0" max="2" value="1" step="0.05" class="slider" id="beta2">
+                <br>
+                <input type="checkbox" id="beta-sync" name="beta-sync">
+                <label for="beta-sync">Bind &beta; together?</label>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <p>&theta; = <span id="theta-display"></span></p>
+                <input type="range" min="0" max="2" value="0.5" step="0.05" class="slider" id="theta1">
+                <input type="range" min="0" max="2" value="0.5" step="0.05" class="slider" id="theta2">
+                <br>
+                <input type="checkbox" id="theta-sync" name="theta-sync">
+                <label for="theta-sync">Bind &theta; together?</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>d = <span id="d-display"></span></p>
+                <input type="range" min="0" max="1" value="0" step="0.05" class="slider" id="d1">
+                <input type="range" min="0" max="1" value="0" step="0.05" class="slider" id="d2">
+                <br>
+                <input type="checkbox" id="d-sync" name="d-sync">
+                <label for="d-sync">Bind d together?</label>
+            </td>
+            <td>
+                <p>r = <span id="r-display"></span></p>
+                <input type="range" min="0" max="0.1" value="0.05" step="0.01" class="slider" id="r1">
+                <input type="range" min="0" max="0.1" value="0.05" step="0.01" class="slider" id="r2">
+                <br>
+                <input type="checkbox" id="r-sync" name="r-sync">
+                <label for="r-sync">Bind r together?</label>
+            </td>
+        </tr>
+    </table>
+    <br>
+
+    <button id="button">Run</button>
+
+    <p>Solution:</p>
+    <div id="solution-div">
+        <p>Xs = <span id="solution-xs">[]</span></p>
+        <p>Xp = <span id="solution-xp">[]</span></p>
+        <p>s = <span id="solution-s">[]</span></p>
+        <p>p = <span id="solution-p">[]</span></p>
+        <br>
+        <p>Proba. of safe outcome = <span id="solution-total-safety">-</span></p>
+        <p>payoffs = <span id="solution-payoffs">[]</span></p>
+    </div>
+
+    <script src="./dist/solverApplet.bundle.js"></script>
+</body>

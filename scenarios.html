@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset=utf-8>
+    <title>Model for safety-performance tradeoffs</title>
+    <!-- <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script> -->
+</head>
+
+<body>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #eeeeee;
+            text-align: center;
+        }
+        table {
+            margin: auto;
+        }
+        td {
+            padding: 20px;
+        }
+    </style>
+
+    <div id="plot-div" style="width: 600px; height: 400px; margin: auto;"></div>
+    <br>
+    <input type="range" min="0." max="2" value="0.5" step="0.05" class="slider" id="theta-slider">
+    <p>&theta; = <span id="theta-display"></span></p>
+
+    <script src="./dist/scenario.bundle.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
+    <script type="text/javascript">
+        function makePlot(theta) {
+            const base_r = 0.01;
+            const step_size = 0.01;
+            const n_steps = 10;
+            const scenario = model.createScenario(2, "r", step_size, n_steps, { theta: theta, r: base_r });
+            const res = scenario.solve();
+            const sigma = res.map(x => x.total_safety);
+            const r = Array.from(Array(n_steps).keys()).map(i => base_r + i * step_size);
+            const data = [{
+                x: r,
+                y: sigma,
+                type: 'scatter',
+                mode: 'lines',
+                name: 'Safety'
+            }];
+            const layout = {
+                title: 'Proba{safe outcome} as a function of r',
+                xaxis: {
+                    title: 'r',
+                    ticks: 'outside',
+                    tickcolor: '#000'
+                },
+                yaxis: {
+                    title: 'σ',
+                    ticks: 'outside',
+                    tickcolor: '#000'
+                }
+            };
+            Plotly.newPlot('plot-div', data, layout);
+        }
+
+        let updatePlot = false;
+        const thetaSlider = document.getElementById('theta-slider');
+        function updateThetaDisplay() {
+            document.getElementById('theta-display').innerHTML = thetaSlider.value;
+            updatePlot = true;
+        }
+        updateThetaDisplay();
+        thetaSlider.addEventListener('input', updateThetaDisplay);
+
+        setInterval(function() {
+            if (updatePlot) {
+                updatePlot = false;
+                makePlot(thetaSlider.value);
+            }
+        }, 200);
+    </script>
+</body>

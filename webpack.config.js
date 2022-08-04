@@ -1,9 +1,14 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/index.ts',
+    mode: 'development',
+    entry: {
+        scenario: './src/scenario.ts',
+        solverApplet: './src/solverApplet.ts'
+    },
     output: {
-        filename: 'bundle.js',
+        filename: '[name].bundle.js',
+        library: 'model',
         path: path.resolve(__dirname, 'dist')
     },
     resolve: {
@@ -25,5 +30,6 @@ module.exports = {
             }
         ]
     },
-    devtool: 'inline-source-map'
+    devtool: 'inline-source-map',
+    target: 'web'
 };

@@ -83,7 +83,6 @@ export class Scenario {
 
     solve(solverOptions: NMOptions = new NMOptions()): Array<SolverResult> {
         const results: Array<SolverResult> = [];
-        console.log(this);
         for (let i = 0; i < this.nVarying; i++) {
             const prodFunc = new ProdFunc({
                 a: <Vec>this.params.a[i],
@@ -113,7 +112,7 @@ function expandValue(value: number | Array<number>, n: number) {
 }
 
 export function createScenario(
-    n : number,
+    n : number = 2,
     varying: string = "r",
     stepsize: number | Array<number> = 0.01,
     steps: number = 10,
